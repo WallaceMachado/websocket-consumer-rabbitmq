@@ -2,22 +2,37 @@ package main
 
 import (
 	"fmt"
+	"html/template"
+	"log"
+	"net/http"
 
 	"github.com/wallacemachado/websocket-consumer-rabbitmq/src/config"
-	"github.com/wallacemachado/websocket-consumer-rabbitmq/src/queue"
+	"github.com/wallacemachado/websocket-consumer-rabbitmq/src/websocket"
 )
 
-func main() {
+func homePage(w http.ResponseWriter, r *http.Request) {
+	t := template.Must(template.ParseFiles("src/templates/index.html"))
+	t.Execute(w, nil)
+}
 
-	config.Loader()
+func operationsInPersonApi(w http.ResponseWriter, r *http.Request) {
 
-	in := make(chan []byte)
-
-	connection := queue.Connect()
-	queue.StartConsuming("person_queue", connection, in)
-
-	for payload := range in {
-		fmt.Println(string(payload))
+	ws, err := websocket.Upgrade(w, r)
+	if err != nil {
+		fmt.Fprintf(w, "%+v\n", err)
 	}
 
+	go websocket.Writer(ws)
+}
+
+func setupRoutes() {
+	http.HandleFunc("/", homePage)
+	http.HandleFunc("/person-api", operationsInPersonApi)
+	log.Fatal(http.ListenAndServe(":8080", nil))
+}
+
+func main() {
+	config.Loader()
+
+	setupRoutes()
 }
