@@ -1,0 +1,13 @@
+version: "3.9"
+services:
+    
+  app:
+    build: .
+    ports:
+      - 5001:5001
+    networks:
+      - app_network
+  
+networks:
+  app_network:
+    driver: bridge
