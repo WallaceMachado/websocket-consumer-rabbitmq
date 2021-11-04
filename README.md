@@ -2,8 +2,8 @@
 
 > status:	🚧 api-bank-transfers 🚀 em construção..  🚧
 
-Um serviço que consome os eventos gerados pela [PERSON-API](https://github.com/WallaceMachado/challenge-go-rabbitmq) em uma fila do rambbitmq, e atualiza
-um websocket para exibição dos mesmos.
+Um serviço que consome os eventos gerados pela [PERSON-API](https://github.com/WallaceMachado/challenge-go-rabbitmq) em uma fila do rabbitMQ, e atualiza
+via websocket a exibição dos mesmos.
 
 
 
