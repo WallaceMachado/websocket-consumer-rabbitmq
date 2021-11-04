@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/gorilla/websocket"
+	"github.com/wallacemachado/websocket-consumer-rabbitmq/src/config"
 	"github.com/wallacemachado/websocket-consumer-rabbitmq/src/queue"
 )
 
@@ -32,7 +33,7 @@ func Writer(conn *websocket.Conn) {
 	in := make(chan []byte)
 
 	connection := queue.Connect()
-	queue.StartConsuming("person_queue", connection, in)
+	queue.StartConsuming(config.RabbitmqQueuePerson, connection, in)
 
 	for payload := range in {
 		if err := conn.WriteMessage(websocket.TextMessage, payload); err != nil {
