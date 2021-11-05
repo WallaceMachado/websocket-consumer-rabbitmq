@@ -9,8 +9,9 @@
   </head>
   <body>
     <div class="container">
-      <h2>Controle de operações na Api Person</h2>
-      <h1 id="subs"></h1>
+      <h1>Controle de operações na Api Person</h1>
+      <h2 id="total"></h2>
+      <ul id="list"></ul>
     </div>
 
     <script>
@@ -29,10 +30,19 @@
       websocket.onmessage = function(event) {
         
         data.push(JSON.parse(event.data));
-        document.getElementById("subs").innerText =
-          data.length;
-        console.log(data)
-      };
+                 
+          
+        let list = document.getElementById('list');
+        i = data.length -1;
+        for( i ; i < data.length; i++){
+            let item = document.createElement('li');
+            item.appendChild(document.createTextNode(data[i]));
+            list.appendChild(item);
+        };
+
+        document.getElementById("total").innerText =
+            "Total: " + data.length;
+        }
     </script>
   </body>
 </html>
