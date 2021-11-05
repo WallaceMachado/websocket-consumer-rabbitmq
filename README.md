@@ -2,8 +2,8 @@
 
 > status:	🚧 api-bank-transfers 🚀 em construção..  🚧
 
-Um serviço, consome os eventos gerados pela [PERSON-API](https://github.com/WallaceMachado/challenge-go-rabbitmq) em uma fila do rambbitmq, e atualiza
-um websocket para exibição dos mesmos.
+Um serviço que consome os eventos gerados pela [PERSON-API](https://github.com/WallaceMachado/challenge-go-rabbitmq) em uma fila do rabbitMQ, e atualiza
+via websocket a exibição dos mesmos.
 
 
 
@@ -14,7 +14,6 @@ um websocket para exibição dos mesmos.
 * <p><a href="#variáveis-de-ambiente">Variáveis de Ambiente</a></p>
 * <p><a href="#rotas">Rotas</a></p>
 * <p><a href="#controle-de-versão">Controle de versão</a></p>
-* <p><a href="#testes">Testes</a></p>
 * <p><a href="#autor">Autor</a></p>
 
 
@@ -71,12 +70,7 @@ $ cd websocket-consumer-rabbitmq
 $ docker-compose up -d --build
 
 ```
-#### Configuração RabbitMQ
-* Acessar via navegador http://localhost:15672, 
-* Efetuar login com usuário e senha do arquivo ``` .env ```
-* Criar nova exchange com o mesmo nome da variável de ambiente RABBITMQ_EXCHANGE_PERSON
-* Criar nova queue com o mesmo nome da variável de ambiente RABBITMQ_QUEUE_PERSON
-* Fazer o bind da queue com a exchange
+
 
 ## Variáveis de Ambiente
 
@@ -110,54 +104,6 @@ GET http://localhost:5001/api/v1/
 |  / |  GET |  -  | vizualizar, via navegagor, os eventos recebidos via websocket |
 |  /person-api|  GET | - | connect-se via websocket com o serviço que consome a fila do rabbitmq das operações feitas na person-api |
 
-
-
-## Testes
-Para executar os testes :
-
-### Local
-
-Altere a varável de ambiente RABBITMQ_DEFAULT_HOST  para localhost
-
-```bash
-
-  # Acesse a pasta do projeto no terminal / cmd
-  $ cd challenge-go-rabbitmq
-  
-  # Rode os testes
-  $ go test ./...
-  
-```
-
-
-### Docker
-
-
-```bash
-
-    # Acesse a pasta do projeto no terminal / cmd
-    $ cd challenge-go-rabbitmq
-
-    # Instale as dependências e rode o projeto
-    $ docker-compose up --build
-
-    # Pegar o CONTNAINER ID  da imagem github.com/wallacemachado/challenge-go-rabbitmq
-    $ docker ps
-    # Exemplo de retorno:
-    # CONTAINER ID      IMAGE                                             COMMAND                  
-    # xxxxxxxxxxxxxxx   github.com/wallacemachado/websocket-consumer-rabbitmq      "go run main.go"         0.0.0.0:5003->5000/tcp, :::5003->5003 ....  
-    # yyyyyyyyyyyyyyy   github.com/wallacemachado/websocket-consumer-rabbitmq   "docker-entrypoint.s…"   0.0.0.0:5432->5432/tcp, :::5432->5432 ....
-
-    # acesse o contaniner
-    $ docker exec -it <CONTAINER ID> /bin/bash
-    # Exemplo:
-    # docker exec -it xxxxxxxxxxxxxxx /bin/bash
-
-    #root@xxxxxxxxxxxxxxx:/go/src/app# 
-    #rode os testes
-    $ go test ./...
-
-```
 
 
 
