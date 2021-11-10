@@ -15,31 +15,48 @@ var upgrader = websocket.Upgrader{
 	WriteBufferSize: 1024,
 }
 
-func Upgrade(w http.ResponseWriter, r *http.Request) (*websocket.Conn, error) {
+var conns []*websocket.Conn
+var in = make(chan []byte)
+
+func Upgrade(w http.ResponseWriter, r *http.Request) error {
 
 	upgrader.CheckOrigin = func(r *http.Request) bool { return true }
 
 	ws, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
 		log.Println(err)
-		return ws, err
+		return err
 	}
 
-	return ws, nil
+	//gerar um array de ws
+	// padrão observer
+
+	conns = append(conns, ws)
+	fmt.Println("t ", ws.LocalAddr().String())
+
+	return nil
 }
 
-func Writer(conn *websocket.Conn) {
+func Writer() {
+	// conn vai ser uma range
+	// implementar o close
 
-	in := make(chan []byte)
+	if len(conns) == 1 {
+		connection := queue.Connect()
 
-	connection := queue.Connect()
-	queue.StartConsuming(config.RabbitmqQueuePerson, connection, in)
-
+		queue.StartConsuming(config.RabbitmqQueuePerson, connection, in, "websocket")
+	}
 	for payload := range in {
-		if err := conn.WriteMessage(websocket.TextMessage, payload); err != nil {
-			fmt.Println(err)
-			return
+
+		for _, conn := range conns {
+
+			if err := conn.WriteMessage(websocket.TextMessage, payload); err != nil {
+				fmt.Println("err", err)
+				return
+			}
+
 		}
+
 	}
 
 }

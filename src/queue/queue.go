@@ -17,10 +17,11 @@ func Connect() *amqp.Channel {
 	if err != nil {
 		panic(err.Error())
 	}
+
 	return channel
 }
 
-func StartConsuming(queue string, ch *amqp.Channel, in chan []byte) {
+func StartConsuming(queue string, ch *amqp.Channel, in chan []byte, consumer string) {
 
 	q, err := ch.QueueDeclare(
 		queue,
@@ -34,10 +35,10 @@ func StartConsuming(queue string, ch *amqp.Channel, in chan []byte) {
 	if err != nil {
 		panic(err.Error())
 	}
-
+	
 	msgs, err := ch.Consume(
 		q.Name,
-		"websocket",
+		consumer,
 		true,
 		false,
 		false,
@@ -47,9 +48,10 @@ func StartConsuming(queue string, ch *amqp.Channel, in chan []byte) {
 	if err != nil {
 		panic(err.Error())
 	}
-
+	
 	go func() {
 		for m := range msgs {
+			
 			in <- []byte(m.Body)
 		}
 		close(in)

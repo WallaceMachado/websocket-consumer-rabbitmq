@@ -15,10 +15,10 @@ func HomePage(w http.ResponseWriter, r *http.Request) {
 
 func OperationsInPersonApi(w http.ResponseWriter, r *http.Request) {
 
-	ws, err := websocket.Upgrade(w, r)
+	err := websocket.Upgrade(w, r)
 	if err != nil {
 		fmt.Fprintf(w, "%+v\n", err)
 	}
 
-	go websocket.Writer(ws)
+	go websocket.Writer()
 }
